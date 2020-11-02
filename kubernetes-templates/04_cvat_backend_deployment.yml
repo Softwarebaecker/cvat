@@ -26,8 +26,8 @@ spec:
           imagePullPolicy: "IfNotPresent"
           resources:
             requests:
-              cpu: 10m
-              memory: 100Mi
+              cpu: 500m
+              memory: 1000Mi
           env:
           - name: CVAT_NUCLIO_HOST
             value: "nuclio-service"
@@ -76,6 +76,8 @@ spec:
           - mountPath: /home/django/models
             name: cvat-backend-data
             subPath: models
+          - mountPath: /home/django/share
+            name: azure-share
       initContainers:
         - name: user-data-permission-fix
           image: busybox
@@ -97,3 +99,8 @@ spec:
         - name: cvat-backend-data
           persistentVolumeClaim:
             claimName: cvat-backend-data
+        - name: azure-share
+          azureFile:
+            secretName: cvat-backend-record-secret
+            shareName: recordings
+            readOnly: false
